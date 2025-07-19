@@ -98,7 +98,22 @@ module Rspec
     def failure_message
       return nil unless status == 'failed'
       
-      example.dig('exception', 'message')
+      message = example.dig('exception', 'message')
+      return nil unless message
+      
+      # Strip RSpec's diff section if requested
+      if !options[:rspec_diff_in_message]
+        # RSpec appends diffs with "\nDiff:" or "\nDiff for (...):"
+        # The diff always contains @@ markers (unified diff format) or the empty diff message
+        # This regex requires either @@ or "The diff is empty" to appear after Diff:
+        # to avoid false positives where "Diff:" might appear in user data
+        message = message.sub(
+          /\n\s*Diff(?:\s+for\s+\([^)]+\))?:.*?(?:@@|The diff is empty).*\z/m, 
+          ''
+        )
+      end
+      
+      message
     end
 
     def has_actual?
