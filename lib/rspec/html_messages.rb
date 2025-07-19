@@ -44,8 +44,12 @@ module Rspec
     def default_options
       {
         debug: false,
-        force_diffable: nil,
-        force_not_diffable: nil,
+        force_diffable: [
+          "RSpec::Matchers::BuiltIn::ContainExactly"  # Used by both contain_exactly and match_array
+        ],
+        force_not_diffable: [
+          "RSpec::Matchers::BuiltIn::Include"  # Include matcher shows what's missing, not a line-by-line diff
+        ],
         rspec_diff_in_message: false
       }
     end
