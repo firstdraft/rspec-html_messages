@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: Please use the following metadata when citing this project in your work.
+title: Rspec Html Messages
+abstract:
+version: 0.0.0
+license: Hippocratic-2.1
+date-released: 2025-07-19
+authors:
+  - family-names: Betina
+    given-names: Raghu
+    affiliation: %<organization_label>s
+    orcid: https://orcid.org/
+keywords:
+ - ruby
+repository-code: https://github.com/undefined/rspec-html_messages
+repository-artifact: https://rubygems.org/gems/rspec-html_messages
+url: https://undefined.io/projects/rspec-html_messages
