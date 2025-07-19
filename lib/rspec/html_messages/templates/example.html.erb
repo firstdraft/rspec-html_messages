@@ -1,0 +1,21 @@
+<div class="rspec-example <%= status_class %>">
+  <% if options[:debug] %>
+    <%= render_partial('debug_header') %>
+  <% end %>
+
+  <div class="rspec-example-body">
+    <% if show_diff? %>
+      <%= render_partial('diff') %>
+    <% elsif has_actual? %>
+      <%= render_partial('actual') %>
+    <% end %>
+
+    <% if failure_message.present? %>
+      <%= render_partial('failure_message') %>
+    <% end %>
+  </div>
+
+  <% if options[:debug] %>
+    <%= render_partial('raw_json') %>
+  <% end %>
+</div>

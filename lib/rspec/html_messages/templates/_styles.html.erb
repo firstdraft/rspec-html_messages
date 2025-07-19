@@ -1,0 +1,33 @@
+<style>
+  /* Diffy styles */
+  <%= Diffy::CSS %>
+
+  /* Override Diffy hover effect */
+  .diff li:hover { background: inherit !important; }
+
+  /* Fix for Unicode box-drawing characters */
+  .terminal-output pre {
+    line-height: 1;
+  }
+
+  /* Increase font size in diff output */
+  .diff {
+    font-size: 1rem;
+  }
+  .diff del, .diff ins, .diff span {
+    font-size: inherit;
+  }
+
+  /* Additional styles for example rendering */
+  .rspec-example {
+    margin-bottom: 1.5rem;
+  }
+
+  .rspec-example.passed .rspec-example-body {
+    /* Passed examples don't need special styling */
+  }
+
+  .rspec-example.failed .rspec-example-body {
+    /* Failed examples don't need special styling */
+  }
+</style>

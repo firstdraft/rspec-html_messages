@@ -1,0 +1,12 @@
+<div class="card-header bg-light py-3">
+  <div class="d-flex align-items-center">
+    <h3 class="h6 mb-0 me-3"><%= html_escape(description) %></h3>
+    <span class="badge <%= status == 'passed' ? 'bg-success' : 'bg-danger' %>"><%= status.upcase %></span>
+    <span class="badge bg-secondary ms-2"><%= matcher_type %></span>
+    <span class="badge bg-secondary ms-2">Diffable: <%= effective_diffable %></span>
+  </div>
+  <div class="mt-2">
+    <span class="me-4"><strong>Location:</strong> <%= file_path %>:<%= line_number %></span>
+    <span><strong>Matcher:</strong> <%= html_escape(matcher_name) %></span>
+  </div>
+</div>
