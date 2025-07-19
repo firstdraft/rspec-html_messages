@@ -1,91 +1,211 @@
-:toc: macro
-:toclevels: 5
-:figure-caption!:
+# RSpec HTML Messages
 
-= Rspec Html Messages
+Transform RSpec's JSON output into beautifully formatted HTML with syntax highlighting, side-by-side diffs, and Bootstrap styling.
 
-toc::[]
+## Overview
 
-== Features
+`rspec-html_messages` takes the enriched JSON output from [`rspec-enriched_json`](https://github.com/firstdraft/rspec-enriched_json) and renders it as HTML. It provides:
 
-== Requirements
+- 🎨 **Beautiful formatting** - Clean, Bootstrap-styled output
+- 🔍 **Side-by-side diffs** - Visual comparison of expected vs actual values
+- 📊 **Smart data rendering** - Pretty-printing for complex objects
+- 🐛 **Debug mode** - See matcher details and raw JSON data
+- ⚙️ **Flexible options** - Control diff display and message formatting
 
-. link:https://www.ruby-lang.org[Ruby].
+## Installation
 
-== Setup
+Add to your Gemfile:
 
-To install _with_ security, run:
+```ruby
+gem 'rspec-html_messages'
+```
 
-[source,bash]
-----
-# 💡 Skip this line if you already have the public certificate installed.
-gem cert --add <(curl --compressed --location https://undefined.io/gems.pem)
-gem install rspec-html_messages --trust-policy HighSecurity
-----
+Or install directly:
 
-To install _without_ security, run:
+```bash
+$ gem install rspec-html_messages
+```
 
-[source,bash]
-----
-gem install rspec-html_messages
-----
+## Usage
 
-You can also add the gem directly to your project:
+### Basic Usage
 
-[source,bash]
-----
-bundle add rspec-html_messages
-----
+```ruby
+require 'rspec/html_messages'
 
-Once the gem is installed, you only need to require it:
+# Get enriched JSON from RSpec
+# (typically from running with rspec-enriched_json formatter)
+example_json = {
+  'id' => 'spec/example_spec.rb[1:1]',
+  'description' => 'should equal 42',
+  'status' => 'failed',
+  'file_path' => 'spec/example_spec.rb',
+  'line_number' => 10,
+  'details' => {
+    'expected' => '"42"',
+    'actual' => '"41"',
+    'matcher_name' => 'RSpec::Matchers::BuiltIn::Eq',
+    'diffable' => true
+  },
+  'exception' => {
+    'message' => 'expected: "42"\n     got: "41"\n\n(compared using ==)'
+  }
+}
 
-[source,ruby]
-----
-require "rspec/html_messages"
-----
+# Render as HTML
+renderer = Rspec::HtmlMessages.new(example_json)
+html = renderer.render
 
-== Usage
+# Output includes styled HTML with diff
+puts html
+```
 
-== Development
+### Options
 
-To contribute, run:
+You can customize the rendering with various options:
 
-[source,bash]
-----
-git clone https://github.com/undefined/rspec-html_messages
-cd rspec-html_messages
-bin/setup
-----
+```ruby
+html = renderer.render(
+  debug: true,                    # Show debug information (default: false)
+  force_diffable: true,          # Force diff display even for non-diffable matchers (default: nil)
+  force_not_diffable: true,      # Prevent diff display even for diffable matchers (default: nil)
+  rspec_diff_in_message: true    # Include RSpec's text diff in failure message (default: false)
+)
+```
 
-You can also use the IRB console for direct access to all objects:
+#### Option Details
 
-[source,bash]
-----
-bin/console
-----
+- **`debug`**: When `true`, displays additional information including the matcher class, diffable status, and raw JSON data
+- **`force_diffable`**: Override the matcher's diffable setting to always show a diff
+- **`force_not_diffable`**: Override the matcher's diffable setting to never show a diff
+- **`rspec_diff_in_message`**: By default, RSpec's text-based diff is stripped from failure messages since we show a visual diff. Set to `true` to keep it
 
-== Tests
+### Complete Example
 
-To test, run:
+Here's a complete example that processes RSpec output and generates an HTML report:
 
-[source,bash]
-----
-bin/rake
-----
+```ruby
+require 'json'
+require 'rspec/html_messages'
 
-== link:https://undefined.io/policies/license[License]
+# Run RSpec with enriched JSON formatter
+json_output = `bundle exec rspec --require rspec/enriched_json \
+  -f RSpec::EnrichedJson::Formatters::EnrichedJsonFormatter`
 
-== link:https://undefined.io/policies/security[Security]
+# Parse the JSON
+results = JSON.parse(json_output)
 
-== link:https://undefined.io/policies/code_of_conduct[Code of Conduct]
+# Generate HTML report
+html = <<~HTML
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RSpec Results</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container my-4">
+    <h1>Test Results</h1>
+    <p>#{results['summary_line']}</p>
+    
+HTML
 
-== link:https://undefined.io/policies/contributions[Contributions]
+# Render each example
+results['examples'].each do |example|
+  renderer = Rspec::HtmlMessages.new(example)
+  html << renderer.render(debug: ENV['DEBUG'])
+end
 
-== link:https://undefined.io/policies/developer_certificate_of_origin[Developer Certificate of Origin]
+html << <<~HTML
+  </div>
+</body>
+</html>
+HTML
 
-== link:https://undefined.io/projects/rspec-html_messages/versions[Versions]
+File.write('rspec_results.html', html)
+```
 
-== Credits
+## Output Examples
 
-* Built with link:https://alchemists.io/projects/gemsmith[Gemsmith].
-* Engineered by link:https://undefined.io/team/undefined[Raghu Betina].
+### Passing Test
+
+For a passing test, you'll see:
+- ✓ Green checkmark and background
+- Test description and file location
+- No failure message or diff
+
+### Failing Test with Diff
+
+For a failing test with diffable values:
+- ✗ Red X and background  
+- Test description and file location
+- Side-by-side comparison showing differences
+- Failure message (with RSpec's diff stripped by default)
+
+### Debug Mode
+
+With `debug: true`, additional information is displayed:
+- Matcher class name (e.g., `RSpec::Matchers::BuiltIn::Eq`)
+- Whether the matcher is diffable
+- Collapsible section with raw JSON data
+
+## Working with rspec-enriched_json
+
+This gem is designed to work with [`rspec-enriched_json`](https://github.com/firstdraft/rspec-enriched_json), which provides structured data about test failures including:
+
+- Expected and actual values as structured data (not just strings)
+- Matcher information
+- Diffable status
+- Original failure messages
+
+To use both gems together:
+
+1. Add both gems to your Gemfile:
+   ```ruby
+   gem 'rspec-enriched_json'
+   gem 'rspec-html_messages'
+   ```
+
+2. Run RSpec with the enriched JSON formatter:
+   ```bash
+   bundle exec rspec --require rspec/enriched_json \
+     -f RSpec::EnrichedJson::Formatters::EnrichedJsonFormatter
+   ```
+
+3. Process the output with rspec-html_messages as shown in the examples above
+
+## Customization
+
+### Templates
+
+The gem uses ERB templates for rendering. The templates are located in `lib/rspec/html_messages/templates/`:
+
+- `example.html.erb` - Main template for each test example
+- `_styles.html.erb` - CSS styles (includes Diffy styles)
+- `_debug_header.html.erb` - Debug information header
+- `_diff.html.erb` - Side-by-side diff display
+- `_actual.html.erb` - Actual value display (for non-diffable failures)
+- `_failure_message.html.erb` - Failure message display
+- `_raw_json.html.erb` - Raw JSON display for debug mode
+
+### Styling
+
+The output uses Bootstrap 5 classes and includes custom styles for:
+- Example containers (`.example.passed`, `.example.failed`)
+- Status icons
+- Diff display (using Diffy's CSS)
+- Terminal-style output for failure messages
+
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests.
+
+To install this gem onto your local machine, run `bundle exec rake install`.
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/firstdraft/rspec-html_messages.
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
