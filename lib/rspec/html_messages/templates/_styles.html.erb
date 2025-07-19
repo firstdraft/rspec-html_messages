@@ -19,15 +19,32 @@
   }
 
   /* Additional styles for example rendering */
-  .rspec-example {
+  .example {
     margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 0.25rem;
   }
 
-  .rspec-example.passed .rspec-example-body {
-    /* Passed examples don't need special styling */
+  .example.passed {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
   }
 
-  .rspec-example.failed .rspec-example-body {
-    /* Failed examples don't need special styling */
+  .example.failed {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+  }
+
+  .status-icon {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .example.passed .status-icon {
+    color: #155724;
+  }
+
+  .example.failed .status-icon {
+    color: #721c24;
   }
 </style>

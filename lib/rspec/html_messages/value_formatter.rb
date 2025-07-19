@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'oj'
-require 'amazing_print'
+require "oj"
+require "amazing_print"
 
 module Rspec
   class HtmlMessages
@@ -23,7 +23,7 @@ module Rspec
           # For strings, just return them as-is (not their inspect representation)
           value
         when nil
-          'nil'
+          "nil"
         else
           # Use amazing_print for complex objects
           # raw: true enables display of instance variables for custom objects
@@ -41,7 +41,7 @@ module Rspec
             raw: true
           )
         end
-      rescue StandardError
+      rescue
         # Fallback for any formatting errors
         value.to_s
       end
@@ -50,7 +50,7 @@ module Rspec
         return nil unless serialized_value
 
         Oj.load(serialized_value, OJ_LOAD_OPTIONS)
-      rescue StandardError
+      rescue
         # If deserialization fails, return the original value
         serialized_value
       end
