@@ -67,8 +67,8 @@ You can customize the rendering with various options:
 ```ruby
 html = renderer.render(
   debug: true,                    # Show debug information (default: false)
-  force_diffable: true,          # Force diff display even for non-diffable matchers (default: nil)
-  force_not_diffable: true,      # Prevent diff display even for diffable matchers (default: nil)
+  force_diffable: ["CustomMatcher"],  # Array of matchers to always show diffs for
+  force_not_diffable: ["RSpec::Matchers::BuiltIn::Include"],  # Array of matchers to never show diffs for
   rspec_diff_in_message: true    # Include RSpec's text diff in failure message (default: false)
 )
 ```
@@ -76,8 +76,15 @@ html = renderer.render(
 #### Option Details
 
 - **`debug`**: When `true`, displays additional information including the matcher class, diffable status, and raw JSON data
-- **`force_diffable`**: Override the matcher's diffable setting to always show a diff
-- **`force_not_diffable`**: Override the matcher's diffable setting to never show a diff
+
+- **`force_diffable`**: Array of matcher class names that should always show diffs, even if they report as non-diffable
+  - Default: `["RSpec::Matchers::BuiltIn::ContainExactly"]` (used by `contain_exactly` and `match_array`)
+  - Override by passing your own array
+
+- **`force_not_diffable`**: Array of matcher class names that should never show diffs, even if they report as diffable
+  - Default: `["RSpec::Matchers::BuiltIn::Include"]` (the `include` matcher shows what's missing more clearly than a diff)
+  - Override by passing your own array
+
 - **`rspec_diff_in_message`**: By default, RSpec's text-based diff is stripped from failure messages since we show a visual diff. Set to `true` to keep it
 
 ### Complete Example
