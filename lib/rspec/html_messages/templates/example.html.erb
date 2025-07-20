@@ -25,6 +25,10 @@
     <% if failure_message.present? %>
       <%= render_partial('failure_message') %>
     <% end %>
+
+    <% if error_before_assertion? %>
+      <%= render_partial('exception_details') %>
+    <% end %>
   </div>
 
   <% if options[:debug] %>
