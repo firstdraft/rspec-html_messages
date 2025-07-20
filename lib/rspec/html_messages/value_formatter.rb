@@ -24,7 +24,7 @@ module Rspec
         sort_keys: true,    # Consistent hash ordering
         object_id: false,   # No object IDs
         raw: true          # Show instance variables
-      }.freeze
+      }
 
       def prettify_for_diff(value)
         case value
@@ -32,8 +32,6 @@ module Rspec
         when nil then "nil"
         else value.awesome_inspect(AWESOME_PRINT_OPTIONS)
         end
-      rescue
-        value.to_s
       end
 
       def deserialize_value(serialized_value)
