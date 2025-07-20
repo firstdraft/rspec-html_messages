@@ -1,36 +1,17 @@
-<div class="mb-3">
-  <div class="d-flex justify-content-between align-items-start">
-    <div>
-      <div class="d-flex align-items-center">
-        <span class="fs-5 fw-bold me-2">
-          <%= status == 'passed' ? '✓' : '✗' %>
-        </span>
-        <h5 class="mb-0"><%= description %></h5>
-      </div>
-      <small class="text-muted"><%= file_path %>:<%= line_number %></small>
-    </div>
-  </div>
-
-  <% if options[:debug] %>
-    <div class="card border-0 bg-light mb-3">
-      <%= render_partial('debug_header') %>
-      <%= render_partial('raw_json') %>
-    </div>
-  <% end %>
-
-  <div class="example-body">
+<div class="rspec-html-messages">
+  <% if options[:show_diff_section] != false && (show_diff? || has_actual?) %>
     <% if show_diff? %>
       <%= render_partial('diff') %>
-    <% elsif has_actual? %>
+    <% else %>
       <%= render_partial('actual') %>
     <% end %>
+  <% end %>
 
-    <% if failure_message.present? %>
-      <%= render_partial('failure_message') %>
-    <% end %>
+  <% if options[:show_failure_message] != false && failure_message.present? %>
+    <%= render_partial('failure_message') %>
+  <% end %>
 
-    <% if error_before_assertion? %>
-      <%= render_partial('exception_details') %>
-    <% end %>
-  </div>
+  <% if options[:show_exception_details] != false && error_before_assertion? %>
+    <%= render_partial('exception_details') %>
+  <% end %>
 </div>
