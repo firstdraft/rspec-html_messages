@@ -185,18 +185,43 @@ module Rspec
     def formatted_backtrace(max_lines = 10)
       return [] if exception_backtrace.empty?
       
-      # Filter out RSpec internal frames
-      filtered = exception_backtrace.reject do |line|
-        line.include?("/lib/rspec/") || 
-        line.include?("/bundle/") ||
-        line.include?("/ruby/")
+      # Filter out RSpec internal frames but keep user code
+      filtered = exception_backtrace.select do |line|
+        # Keep lines from the project (not gems)
+        line.include?(File.dirname(file_path)) ||
+        # Keep lines from lib/ in the project
+        line.include?("/lib/sample_code") ||
+        # Keep the spec file itself
+        line.include?(file_path)
       end
       
-      # If all lines were filtered, show the first few original lines
-      filtered = exception_backtrace.first(5) if filtered.empty?
+      # If we filtered too much, include some RSpec frames for context
+      if filtered.empty?
+        filtered = exception_backtrace.reject do |line|
+          line.include?("/bundle/") || line.include?("/ruby/")
+        end.first(5)
+      end
       
       # Limit the number of lines shown
       filtered.first(max_lines)
+    end
+    
+    # Helper to format a single backtrace line for display
+    def format_backtrace_line(line)
+      # Extract file path and line number
+      if line =~ /^(.+):(\d+):in `(.+)'$/
+        file, line_no, method = $1, $2, $3
+        
+        # Make project files stand out
+        if file.include?(File.dirname(file_path))
+          file = file.sub(File.dirname(file_path) + "/", "")
+          "→ #{file}:#{line_no} in `#{method}'"
+        else
+          "  #{File.basename(file)}:#{line_no} in `#{method}'"
+        end
+      else
+        line
+      end
     end
   end
 end
