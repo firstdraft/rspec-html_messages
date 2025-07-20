@@ -58,7 +58,6 @@ module Rspec
     end
 
     def should_include_styles?
-      # Always include styles for now, can be optimized later
       true
     end
 
@@ -137,14 +136,20 @@ module Rspec
 
     def error_before_assertion?
       # Check if this is an error (not a matcher failure)
-      has_exception? && !has_actual? && !details.key?("expected")
+      has_exception? && !has_actual? && !has_expected?
+    end
+    
+    def has_expected?
+      details.key?("expected")
     end
 
     def backtrace_cleaner
-      @backtrace_cleaner ||= begin
-        bc = ActiveSupport::BacktraceCleaner.new
-        
-        # Add filters to clean up paths
+      @backtrace_cleaner ||= build_backtrace_cleaner
+    end
+    
+    def build_backtrace_cleaner
+      ActiveSupport::BacktraceCleaner.new.tap do |bc|
+        # Clean up paths by removing project root
         bc.add_filter { |line| line.gsub(project_root + "/", "") }
         
         # Optionally silence gem frames
@@ -154,12 +159,8 @@ module Rspec
           bc.add_silencer { |line| line.match?(%r{/ruby/\d+\.\d+\.\d+/}) }
         end
         
-        # Always silence RSpec internals unless it's the only thing we have
-        bc.add_silencer { |line| line.include?("/lib/rspec/core/") }
-        bc.add_silencer { |line| line.include?("/lib/rspec/expectations/") }
-        bc.add_silencer { |line| line.include?("/lib/rspec/mocks/") }
-        
-        bc
+        # Always silence RSpec internals
+        bc.add_silencer { |line| line.match?(%r{/lib/rspec/(core|expectations|mocks)/}) }
       end
     end
 
@@ -176,7 +177,7 @@ module Rspec
     end
 
     def expected_value
-      @expected_value ||= deserialize_value(details["expected"]) if details.key?("expected")
+      @expected_value ||= deserialize_value(details["expected"]) if has_expected?
     end
 
     def prettified_actual
@@ -188,7 +189,7 @@ module Rspec
     end
 
     def negated?
-      details["negated"] || false
+      details["negated"]
     end
 
     def show_diff?
@@ -206,29 +207,19 @@ module Rspec
       @diff_html ||= create_diff(prettified_actual, prettified_expected) if show_diff?
     end
 
-    # For the debug header template
-    def effective_diffable
-      effective_diffable?
-    end
-
-    # Helper to format backtrace for display
     def formatted_backtrace(max_lines = nil)
       return [] if exception_backtrace.empty?
       
       max_lines ||= options[:backtrace_max_lines]
-      
-      # Use ActiveSupport::BacktraceCleaner to clean the backtrace
       cleaned = backtrace_cleaner.clean(exception_backtrace)
       
-      # If all lines were filtered out, show some of the original
+      # If all lines were filtered out, show original with cleaned paths
       if cleaned.empty?
-        # Remove only the most aggressive silencers and try again
-        bc_lenient = ActiveSupport::BacktraceCleaner.new
-        bc_lenient.add_filter { |line| line.gsub(project_root + "/", "") }
-        cleaned = bc_lenient.clean(exception_backtrace).first(5)
+        cleaned = ActiveSupport::BacktraceCleaner.new.tap { |bc|
+          bc.add_filter { |line| line.gsub(project_root + "/", "") }
+        }.clean(exception_backtrace)
       end
       
-      # Limit the number of lines shown
       cleaned.first(max_lines)
     end
   end

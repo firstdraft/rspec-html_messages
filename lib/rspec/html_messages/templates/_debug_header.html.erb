@@ -3,7 +3,7 @@
     <h3 class="h6 mb-0 me-3"><%= html_escape(description) %></h3>
     <span class="badge <%= status == 'passed' ? 'bg-success' : 'bg-danger' %>"><%= status.upcase %></span>
     <span class="badge bg-secondary ms-2"><%= matcher_type %></span>
-    <span class="badge bg-secondary ms-2">Diffable: <%= effective_diffable %></span>
+    <span class="badge bg-secondary ms-2">Diffable: <%= effective_diffable? %></span>
     <span class="badge bg-secondary ms-2">Negated: <%= negated? %></span>
   </div>
   <div class="mt-2">
