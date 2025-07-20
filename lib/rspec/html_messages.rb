@@ -25,19 +25,45 @@ module Rspec
 
     def render(options = {})
       @options = default_options.merge(options)
-
-      # Render styles if this is the first time or in debug mode
-      styles = render_partial("styles") if should_include_styles?
-
-      # Render the main example template
-      content = render_template("example")
-
-      # Combine styles and content
-      [styles, content].compact.join("\n")
+      render_template("example")
     end
 
     def self.loader(registry = Zeitwerk::Registry)
       @loader ||= registry.loaders.each.find { |loader| loader.tag == "rspec-html_messages" }
+    end
+    
+    def self.diff_css
+      # Minimal Diffy styles - only what's essential for diffs
+      # Removed: hardcoded fonts, sizes, and backgrounds
+      <<~CSS
+        .diff { overflow: auto; }
+        .diff ul { 
+          overflow: auto;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: table;
+          width: 100%;
+        }
+        .diff del, .diff ins { 
+          display: block;
+          text-decoration: none;
+        }
+        .diff li {
+          padding: 0;
+          display: table-row;
+          margin: 0;
+          height: 1em;
+        }
+        .diff li.ins { background: #dfd; color: #080; }
+        .diff li.del { background: #fee; color: #b00; }
+        .diff li:hover { background: #ffc; }
+        .diff del, .diff ins, .diff span { white-space: pre-wrap; }
+        .diff del strong { font-weight: normal; background: #fcc; }
+        .diff ins strong { font-weight: normal; background: #9f9; }
+        .diff li.diff-comment { display: none; }
+        .diff li.diff-block-info { background: none repeat scroll 0 0 gray; }
+      CSS
     end
 
     private
@@ -57,9 +83,6 @@ module Rspec
       }
     end
 
-    def should_include_styles?
-      true
-    end
 
     # Helper methods for templates
     def status
@@ -67,7 +90,7 @@ module Rspec
     end
 
     def status_class
-      (status == "passed") ? "passed" : "failed"
+      status == "passed" ? "passed" : "failed"
     end
 
     def description
@@ -106,6 +129,9 @@ module Rspec
 
       message = example.dig("exception", "message")
       return nil unless message
+
+      # Strip leading newline that RSpec's built-in matchers add
+      message = message.sub(/\A\n/, "")
 
       # Strip RSpec's diff section if requested
       if !options[:rspec_diff_in_message]

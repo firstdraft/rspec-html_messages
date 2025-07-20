@@ -5,7 +5,5 @@
       <small class="text-muted">(<%= exception_class %>)</small>
     <% end %>
   </h4>
-  <div class="terminal-output bg-dark p-3 rounded">
-    <pre class="mb-0 failure-message text-light font-monospace overflow-auto"><%= html_escape(failure_message) %></pre>
-  </div>
+  <pre class="failure-message bg-dark text-white p-3 rounded"><code><%= html_escape(failure_message) %></code></pre>
 </div>
