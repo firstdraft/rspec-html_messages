@@ -231,17 +231,5 @@ module Rspec
       # Limit the number of lines shown
       cleaned.first(max_lines)
     end
-    
-    # Helper to format a single backtrace line for display
-    def format_backtrace_line(line)
-      # Check if this is a project file (already cleaned by backtrace_cleaner)
-      if !line.start_with?("/") && !line.match?(/^[A-Z]:\\/)
-        # This is a project file (path was made relative)
-        "→ #{line}"
-      else
-        # This is an external file
-        "  #{line}"
-      end
-    end
   end
 end

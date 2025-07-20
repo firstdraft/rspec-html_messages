@@ -7,7 +7,7 @@
     <div class="mt-3">
       <h5 class="h6 text-muted mb-2">Backtrace:</h5>
       <div class="terminal-output bg-dark p-3 rounded">
-        <pre class="mb-0 text-light font-monospace small"><% formatted_backtrace.each do |line| %><%= html_escape(format_backtrace_line(line)) %>
+        <pre class="mb-0 text-light font-monospace small"><% formatted_backtrace.each do |line| %><%= html_escape(line) %>
 <% end %></pre>
       </div>
       <% if exception_backtrace.size > formatted_backtrace.size %>
