@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "oj"
-require "amazing_print"
+require 'oj'
+require 'amazing_print'
 
 module Rspec
   class HtmlMessages
@@ -14,7 +14,7 @@ module Rspec
         symbol_keys: false,   # Preserve symbols as they were serialized
         circular: true,       # Handle circular references
         create_additions: false, # Don't allow custom deserialization (safety)
-        create_id: nil        # Disable create_id (safety)
+        create_id: nil # Disable create_id (safety)
       }.freeze
 
       AWESOME_PRINT_OPTIONS = {
@@ -23,21 +23,22 @@ module Rspec
         indent: -2,         # 2-space indentation
         sort_keys: true,    # Consistent hash ordering
         object_id: false,   # No object IDs
-        raw: true          # Show instance variables
+        raw: true # Show instance variables
       }
 
       def prettify_for_diff(value)
         case value
         when String then value
-        when nil then "nil"
+        when nil then 'nil'
         else value.awesome_inspect(AWESOME_PRINT_OPTIONS)
         end
       end
 
       def deserialize_value(serialized_value)
         return nil unless serialized_value
+
         Oj.load(serialized_value, OJ_LOAD_OPTIONS)
-      rescue
+      rescue StandardError
         serialized_value
       end
     end

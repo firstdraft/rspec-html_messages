@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "action_view"
+require 'action_view'
 
 module Rspec
   class HtmlMessages
@@ -33,7 +33,7 @@ module Rspec
       end
 
       def templates_dir
-        @templates_dir ||= File.expand_path("templates", __dir__)
+        @templates_dir ||= File.expand_path('templates', __dir__)
       end
 
       def html_escape(text)

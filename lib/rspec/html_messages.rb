@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "zeitwerk"
-require "json"
-require "active_support/backtrace_cleaner"
+require 'zeitwerk'
+require 'json'
+require 'active_support/backtrace_cleaner'
 
 Zeitwerk::Loader.new.then do |loader|
-  loader.tag = "rspec-html_messages"
+  loader.tag = 'rspec-html_messages'
   loader.push_dir "#{__dir__}/.."
   loader.setup
 end
@@ -23,21 +23,46 @@ module Rspec
       @example = example
     end
 
-    def render(options = {})
-      @options = default_options.merge(options)
-      render_template("example")
+    def render(
+      # Section visibility
+      show_diff_section: true,
+      show_failure_message: true,
+      show_exception_details: true,
+
+      # Diff behavior
+      force_diffable: ['RSpec::Matchers::BuiltIn::ContainExactly'],
+      force_not_diffable: ['RSpec::Matchers::BuiltIn::Include'],
+
+      # Failure message options
+      rspec_diff_in_message: false,
+
+      # Exception/backtrace options
+      backtrace_max_lines: 10,
+      backtrace_silence_gems: true
+    )
+      @options = {
+        show_diff_section: show_diff_section,
+        show_failure_message: show_failure_message,
+        show_exception_details: show_exception_details,
+        force_diffable: force_diffable,
+        force_not_diffable: force_not_diffable,
+        rspec_diff_in_message: rspec_diff_in_message,
+        backtrace_max_lines: backtrace_max_lines,
+        backtrace_silence_gems: backtrace_silence_gems
+      }
+      render_template('example')
     end
 
     def self.loader(registry = Zeitwerk::Registry)
-      @loader ||= registry.loaders.each.find { |loader| loader.tag == "rspec-html_messages" }
+      @loader ||= registry.loaders.each.find { |loader| loader.tag == 'rspec-html_messages' }
     end
-    
+
     def self.diff_css
       # Minimal Diffy styles - only what's essential for diffs
       # Removed: hardcoded fonts, sizes, and backgrounds
       <<~CSS
         .diff { overflow: auto; }
-        .diff ul { 
+        .diff ul {#{' '}
           overflow: auto;
           list-style: none;
           margin: 0;
@@ -45,7 +70,7 @@ module Rspec
           display: table;
           width: 100%;
         }
-        .diff del, .diff ins { 
+        .diff del, .diff ins {#{' '}
           display: block;
           text-decoration: none;
         }
@@ -68,80 +93,37 @@ module Rspec
 
     private
 
-    def default_options
-      {
-        debug: false,
-        force_diffable: [
-          "RSpec::Matchers::BuiltIn::ContainExactly"  # Used by both contain_exactly and match_array
-        ],
-        force_not_diffable: [
-          "RSpec::Matchers::BuiltIn::Include"  # Include matcher shows what's missing, not a line-by-line diff
-        ],
-        rspec_diff_in_message: false,
-        backtrace_max_lines: 10,
-        backtrace_silence_gems: true
-      }
-    end
-
-
     # Helper methods for templates
     def status
-      example["status"]
-    end
-
-    def status_class
-      status == "passed" ? "passed" : "failed"
-    end
-
-    def description
-      example["description"]
-    end
-
-    def file_path
-      example["file_path"]
-    end
-
-    def line_number
-      example["line_number"]
+      example['status']
     end
 
     def details
-      @details ||= example["details"] || {}
+      @details ||= example['details'] || {}
     end
 
     def matcher_name
-      details["matcher_name"] || "Unknown"
-    end
-
-    def matcher_type
-      case matcher_name
-      when /DSL::Matcher/
-        "Custom DSL Matcher"
-      when /BuiltIn/
-        "Built-in Matcher"
-      else
-        "Matcher"
-      end
+      details['matcher_name'] || 'Unknown'
     end
 
     def failure_message
-      return nil unless status == "failed"
+      return nil unless status == 'failed'
 
-      message = example.dig("exception", "message")
+      message = example.dig('exception', 'message')
       return nil unless message
 
       # Strip leading newline that RSpec's built-in matchers add
-      message = message.sub(/\A\n/, "")
+      message = message.sub(/\A\n/, '')
 
       # Strip RSpec's diff section if requested
-      if !options[:rspec_diff_in_message]
+      unless options[:rspec_diff_in_message]
         # RSpec appends diffs with "\nDiff:" or "\nDiff for (...):"
         # The diff always contains @@ markers (unified diff format) or the empty diff message
         # This regex requires either @@ or "The diff is empty" to appear after Diff:
         # to avoid false positives where "Diff:" might appear in user data
         message = message.sub(
           /\n\s*Diff(?:\s+for\s+\([^)]+\))?:.*?(?:@@|The diff is empty).*\z/m,
-          ""
+          ''
         )
       end
 
@@ -149,61 +131,61 @@ module Rspec
     end
 
     def exception_class
-      example.dig("exception", "class")
+      example.dig('exception', 'class')
     end
 
     def exception_backtrace
-      example.dig("exception", "backtrace") || []
+      example.dig('exception', 'backtrace') || []
     end
 
     def has_exception?
-      example.key?("exception")
+      example.key?('exception')
     end
 
     def error_before_assertion?
       # Check if this is an error (not a matcher failure)
       has_exception? && !has_actual? && !has_expected?
     end
-    
+
     def has_expected?
-      details.key?("expected")
+      details.key?('expected')
     end
 
     def backtrace_cleaner
       @backtrace_cleaner ||= build_backtrace_cleaner
     end
-    
+
     def build_backtrace_cleaner
       ActiveSupport::BacktraceCleaner.new.tap do |bc|
         # Clean up paths by removing project root
-        bc.add_filter { |line| line.gsub(project_root + "/", "") }
-        
+        bc.add_filter { |line| line.gsub("#{project_root}/", '') }
+
         # Optionally silence gem frames
         if options[:backtrace_silence_gems]
-          bc.add_silencer { |line| line.include?("/gems/") && !line.include?(project_root) }
-          bc.add_silencer { |line| line.include?("/bundle/") }
+          bc.add_silencer { |line| line.include?('/gems/') && !line.include?(project_root) }
+          bc.add_silencer { |line| line.include?('/bundle/') }
           bc.add_silencer { |line| line.match?(%r{/ruby/\d+\.\d+\.\d+/}) }
         end
-        
+
         # Always silence RSpec internals
         bc.add_silencer { |line| line.match?(%r{/lib/rspec/(core|expectations|mocks)/}) }
       end
     end
 
     def project_root
-      @project_root ||= File.expand_path("../..", File.dirname(file_path))
+      @project_root ||= File.expand_path('../..', File.dirname(file_path))
     end
 
     def has_actual?
-      details.key?("actual")
+      details.key?('actual')
     end
 
     def actual_value
-      @actual_value ||= deserialize_value(details["actual"]) if has_actual?
+      @actual_value ||= deserialize_value(details['actual']) if has_actual?
     end
 
     def expected_value
-      @expected_value ||= deserialize_value(details["expected"]) if has_expected?
+      @expected_value ||= deserialize_value(details['expected']) if has_expected?
     end
 
     def prettified_actual
@@ -215,11 +197,11 @@ module Rspec
     end
 
     def negated?
-      details["negated"]
+      details['negated']
     end
 
     def show_diff?
-      return false if status == "passed"
+      return false if status == 'passed'
       return false unless expected_value && actual_value
       return false if negated?
 
@@ -235,17 +217,17 @@ module Rspec
 
     def formatted_backtrace(max_lines = nil)
       return [] if exception_backtrace.empty?
-      
+
       max_lines ||= options[:backtrace_max_lines]
       cleaned = backtrace_cleaner.clean(exception_backtrace)
-      
+
       # If all lines were filtered out, show original with cleaned paths
       if cleaned.empty?
-        cleaned = ActiveSupport::BacktraceCleaner.new.tap { |bc|
-          bc.add_filter { |line| line.gsub(project_root + "/", "") }
-        }.clean(exception_backtrace)
+        cleaned = ActiveSupport::BacktraceCleaner.new.tap do |bc|
+          bc.add_filter { |line| line.gsub("#{project_root}/", '') }
+        end.clean(exception_backtrace)
       end
-      
+
       cleaned.first(max_lines)
     end
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "diffy"
+require 'diffy'
 
 module Rspec
   class HtmlMessages
@@ -8,7 +8,8 @@ module Rspec
       def effective_diffable?
         return true if options[:force_diffable]&.include?(matcher_name)
         return false if options[:force_not_diffable]&.include?(matcher_name)
-        details["diffable"]
+
+        details['diffable']
       end
 
       def create_diff(actual_value, expected_value)
