@@ -17,41 +17,29 @@ module Rspec
         create_id: nil        # Disable create_id (safety)
       }.freeze
 
+      AWESOME_PRINT_OPTIONS = {
+        plain: true,        # No color codes
+        index: false,       # No array indices
+        indent: -2,         # 2-space indentation
+        sort_keys: true,    # Consistent hash ordering
+        object_id: false,   # No object IDs
+        raw: true          # Show instance variables
+      }.freeze
+
       def prettify_for_diff(value)
         case value
-        when String
-          # For strings, just return them as-is (not their inspect representation)
-          value
-        when nil
-          "nil"
-        else
-          # Use amazing_print for complex objects
-          # raw: true enables display of instance variables for custom objects
-          # plain: true removes color codes
-          # index: false removes array indices
-          # indent: -2 reduces indentation to 2 spaces per level
-          # sort_keys: true ensures consistent hash key ordering for better diffs
-          # object_id: false removes object IDs for cleaner diffs
-          value.awesome_inspect(
-            plain: true,
-            index: false,
-            indent: -2,
-            sort_keys: true,
-            object_id: false,
-            raw: true
-          )
+        when String then value
+        when nil then "nil"
+        else value.awesome_inspect(AWESOME_PRINT_OPTIONS)
         end
       rescue
-        # Fallback for any formatting errors
         value.to_s
       end
 
       def deserialize_value(serialized_value)
         return nil unless serialized_value
-
         Oj.load(serialized_value, OJ_LOAD_OPTIONS)
       rescue
-        # If deserialization fails, return the original value
         serialized_value
       end
     end

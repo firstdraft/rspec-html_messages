@@ -6,7 +6,9 @@
         <h5 class="h6 mb-0">Expected</h5>
       </div>
       <div class="card-body">
-        <%= diff_html[:right] %>
+        <div class="font-monospace">
+          <%= diff_html[:right] %>
+        </div>
       </div>
     </div>
     <div class="card">
@@ -14,7 +16,9 @@
         <h5 class="h6 mb-0">Actual</h5>
       </div>
       <div class="card-body">
-        <%= diff_html[:left] %>
+        <div class="font-monospace">
+          <%= diff_html[:left] %>
+        </div>
       </div>
     </div>
   </div>
