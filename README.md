@@ -87,6 +87,14 @@ html = renderer.render(
 
 - **`rspec_diff_in_message`**: By default, RSpec's text-based diff is stripped from failure messages since we show a visual diff. Set to `true` to keep it
 
+- **`backtrace_max_lines`**: Maximum number of backtrace lines to display for errors
+  - Default: `10`
+  - Set to a higher number to see more of the stack trace
+
+- **`backtrace_silence_gems`**: Whether to filter out gem frames from backtraces
+  - Default: `true` (hides frames from installed gems)
+  - Set to `false` to see the complete backtrace including gem internals
+
 ### Complete Example
 
 Here's a complete example that processes RSpec output and generates an HTML report:

@@ -2,6 +2,7 @@
 
 require "zeitwerk"
 require "json"
+require "active_support/backtrace_cleaner"
 
 Zeitwerk::Loader.new.then do |loader|
   loader.tag = "rspec-html_messages"
@@ -50,7 +51,9 @@ module Rspec
         force_not_diffable: [
           "RSpec::Matchers::BuiltIn::Include"  # Include matcher shows what's missing, not a line-by-line diff
         ],
-        rspec_diff_in_message: false
+        rspec_diff_in_message: false,
+        backtrace_max_lines: 10,
+        backtrace_silence_gems: true
       }
     end
 
@@ -137,6 +140,33 @@ module Rspec
       has_exception? && !has_actual? && !details.key?("expected")
     end
 
+    def backtrace_cleaner
+      @backtrace_cleaner ||= begin
+        bc = ActiveSupport::BacktraceCleaner.new
+        
+        # Add filters to clean up paths
+        bc.add_filter { |line| line.gsub(project_root + "/", "") }
+        
+        # Optionally silence gem frames
+        if options[:backtrace_silence_gems]
+          bc.add_silencer { |line| line.include?("/gems/") && !line.include?(project_root) }
+          bc.add_silencer { |line| line.include?("/bundle/") }
+          bc.add_silencer { |line| line.match?(%r{/ruby/\d+\.\d+\.\d+/}) }
+        end
+        
+        # Always silence RSpec internals unless it's the only thing we have
+        bc.add_silencer { |line| line.include?("/lib/rspec/core/") }
+        bc.add_silencer { |line| line.include?("/lib/rspec/expectations/") }
+        bc.add_silencer { |line| line.include?("/lib/rspec/mocks/") }
+        
+        bc
+      end
+    end
+
+    def project_root
+      @project_root ||= File.expand_path("../..", File.dirname(file_path))
+    end
+
     def has_actual?
       details.key?("actual")
     end
@@ -182,45 +212,35 @@ module Rspec
     end
 
     # Helper to format backtrace for display
-    def formatted_backtrace(max_lines = 10)
+    def formatted_backtrace(max_lines = nil)
       return [] if exception_backtrace.empty?
       
-      # Filter out RSpec internal frames but keep user code
-      filtered = exception_backtrace.select do |line|
-        # Keep lines from the project (not gems)
-        line.include?(File.dirname(file_path)) ||
-        # Keep lines from lib/ in the project
-        line.include?("/lib/sample_code") ||
-        # Keep the spec file itself
-        line.include?(file_path)
-      end
+      max_lines ||= options[:backtrace_max_lines]
       
-      # If we filtered too much, include some RSpec frames for context
-      if filtered.empty?
-        filtered = exception_backtrace.reject do |line|
-          line.include?("/bundle/") || line.include?("/ruby/")
-        end.first(5)
+      # Use ActiveSupport::BacktraceCleaner to clean the backtrace
+      cleaned = backtrace_cleaner.clean(exception_backtrace)
+      
+      # If all lines were filtered out, show some of the original
+      if cleaned.empty?
+        # Remove only the most aggressive silencers and try again
+        bc_lenient = ActiveSupport::BacktraceCleaner.new
+        bc_lenient.add_filter { |line| line.gsub(project_root + "/", "") }
+        cleaned = bc_lenient.clean(exception_backtrace).first(5)
       end
       
       # Limit the number of lines shown
-      filtered.first(max_lines)
+      cleaned.first(max_lines)
     end
     
     # Helper to format a single backtrace line for display
     def format_backtrace_line(line)
-      # Extract file path and line number
-      if line =~ /^(.+):(\d+):in `(.+)'$/
-        file, line_no, method = $1, $2, $3
-        
-        # Make project files stand out
-        if file.include?(File.dirname(file_path))
-          file = file.sub(File.dirname(file_path) + "/", "")
-          "→ #{file}:#{line_no} in `#{method}'"
-        else
-          "  #{File.basename(file)}:#{line_no} in `#{method}'"
-        end
+      # Check if this is a project file (already cleaned by backtrace_cleaner)
+      if !line.start_with?("/") && !line.match?(/^[A-Z]:\\/)
+        # This is a project file (path was made relative)
+        "→ #{line}"
       else
-        line
+        # This is an external file
+        "  #{line}"
       end
     end
   end
