@@ -12,7 +12,10 @@
   </div>
 
   <% if options[:debug] %>
-    <%= render_partial('debug_header') %>
+    <div class="card border-0 bg-light mb-3">
+      <%= render_partial('debug_header') %>
+      <%= render_partial('raw_json') %>
+    </div>
   <% end %>
 
   <div class="example-body">
@@ -30,8 +33,4 @@
       <%= render_partial('exception_details') %>
     <% end %>
   </div>
-
-  <% if options[:debug] %>
-    <%= render_partial('raw_json') %>
-  <% end %>
 </div>
