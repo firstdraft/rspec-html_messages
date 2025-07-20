@@ -173,7 +173,7 @@ module Rspec
     end
 
     def project_root
-      @project_root ||= File.expand_path('../..', File.dirname(file_path))
+      @project_root ||= File.expand_path('../..', File.dirname(example['file_path']))
     end
 
     def has_actual?
