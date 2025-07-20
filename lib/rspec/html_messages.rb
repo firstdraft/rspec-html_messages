@@ -120,6 +120,23 @@ module Rspec
       message
     end
 
+    def exception_class
+      example.dig("exception", "class")
+    end
+
+    def exception_backtrace
+      example.dig("exception", "backtrace") || []
+    end
+
+    def has_exception?
+      example.key?("exception")
+    end
+
+    def error_before_assertion?
+      # Check if this is an error (not a matcher failure)
+      has_exception? && !has_actual? && !details.key?("expected")
+    end
+
     def has_actual?
       details.key?("actual")
     end
@@ -162,6 +179,24 @@ module Rspec
     # For the debug header template
     def effective_diffable
       effective_diffable?
+    end
+
+    # Helper to format backtrace for display
+    def formatted_backtrace(max_lines = 10)
+      return [] if exception_backtrace.empty?
+      
+      # Filter out RSpec internal frames
+      filtered = exception_backtrace.reject do |line|
+        line.include?("/lib/rspec/") || 
+        line.include?("/bundle/") ||
+        line.include?("/ruby/")
+      end
+      
+      # If all lines were filtered, show the first few original lines
+      filtered = exception_backtrace.first(5) if filtered.empty?
+      
+      # Limit the number of lines shown
+      filtered.first(max_lines)
     end
   end
 end
