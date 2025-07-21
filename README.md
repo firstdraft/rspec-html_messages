@@ -1,7 +1,7 @@
 # RSpec HTML Messages
 
 [![CI](https://github.com/firstdraft/rspec-html_messages/actions/workflows/ci.yml/badge.svg)](https://github.com/firstdraft/rspec-html_messages/actions/workflows/ci.yml)
-[![Gem Version](https://badge.fury.io/rb/rspec-html-messages.svg)](https://badge.fury.io/rb/rspec-html-messages)
+[![Gem Version](https://img.shields.io/gem/v/rspec-html_messages.svg)](https://rubygems.org/gems/rspec-html_messages)
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/standardrb/standard)
 [![Coverage Status](https://img.shields.io/badge/coverage-96.89%25-brightgreen.svg)](https://github.com/firstdraft/rspec-html_messages)
 
