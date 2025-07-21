@@ -12,6 +12,8 @@ module Rspec
         details["diffable"]
       end
 
+      # Creates side-by-side HTML diff using Diffy
+      # Note: Diffy generates safe HTML with properly escaped content, so we render it unescaped in templates
       def create_diff(actual_value, expected_value)
         split_diff = Diffy::SplitDiff.new(actual_value, expected_value, format: :html)
 
