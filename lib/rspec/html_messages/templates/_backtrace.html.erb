@@ -1,11 +1,12 @@
 <% if exception_backtrace.any? %>
+  <% backtrace_lines = formatted_backtrace(max_lines: @backtrace_max_lines, silence_gems: @backtrace_silence_gems) %>
   <div>
     <h5 class="h6 text-muted mb-2">Backtrace:</h5>
-    <pre class="bg-dark text-white p-3 rounded"><code><% formatted_backtrace(max_lines: @backtrace_max_lines, silence_gems: @backtrace_silence_gems).each do |line| %><%= html_escape(line) %>
+    <pre class="bg-dark text-white p-3 rounded backtrace"><code><% backtrace_lines.each do |line| %><%= html_escape(line) %>
 <% end %></code></pre>
-    <% if exception_backtrace.size > formatted_backtrace(max_lines: @backtrace_max_lines, silence_gems: @backtrace_silence_gems).size %>
+    <% if exception_backtrace.size > backtrace_lines.size %>
       <small class="text-muted mt-1 d-block">
-        (<%= exception_backtrace.size - formatted_backtrace(max_lines: @backtrace_max_lines, silence_gems: @backtrace_silence_gems).size %> more frames omitted)
+        (<%= exception_backtrace.size - backtrace_lines.size %> more frames omitted)
       </small>
     <% end %>
   </div>

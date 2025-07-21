@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative "lib/rspec/html_messages/version"
+
 Gem::Specification.new do |spec|
   spec.name = "rspec-html_messages"
-  spec.version = "0.0.0"
+  spec.version = Rspec::HtmlMessages::VERSION
   spec.authors = ["Raghu Betina"]
   spec.email = ["raghu@firstdraft.com"]
   spec.homepage = "https://github.com/firstdraft/rspec-html_messages"
@@ -27,7 +29,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "amazing_print", "~> 1.6"
   spec.add_dependency "diffy", "~> 3.4"
   spec.add_dependency "oj", "~> 3.16"
-  spec.add_dependency "refinements", "~> 13.3"
   spec.add_dependency "zeitwerk", "~> 2.7"
 
   spec.extra_rdoc_files = Dir["README*", "LICENSE*"]
