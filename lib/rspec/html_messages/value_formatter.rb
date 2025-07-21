@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'oj'
-require 'amazing_print'
+require "oj"
+require "amazing_print"
 
 module Rspec
   class HtmlMessages
@@ -29,7 +29,7 @@ module Rspec
       def prettify_for_diff(value)
         case value
         when String then value
-        when nil then 'nil'
+        when nil then "nil"
         else value.awesome_inspect(AWESOME_PRINT_OPTIONS)
         end
       end
@@ -38,7 +38,7 @@ module Rspec
         return nil unless serialized_value
 
         Oj.load(serialized_value, OJ_LOAD_OPTIONS)
-      rescue StandardError
+      rescue
         serialized_value
       end
     end

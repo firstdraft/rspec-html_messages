@@ -1,7 +1,7 @@
 <% if exception_message.present? %>
   <div class="mb-3">
-    <pre class="bg-dark text-white p-3 rounded"><code><%= html_escape(exception_message) %>
+    <pre class="bg-dark text-warning p-3 rounded error-message"><code class="fw-bold"><%= html_escape(exception_message) %>
 
-<% location = friendly_error_location %><% if location %><span class="text-warning"><%= html_escape(location) %></span><% end %></code></pre>
+<% location = friendly_error_location %><% if location %><span class="text-white fw-normal"><%= html_escape(location) %></span><% end %></code></pre>
   </div>
 <% end %>
