@@ -1,21 +1,18 @@
 <div class="rspec-html-messages">
   <% if output_content = output_html(**@options) %>
-    <div>   
-      <h4 class="h6 mb-3">Output</h4>
+    <div>
       <%= output_content %>
     </div>
   <% end %>
 
   <% if failure_content = failure_message_html(**@options) %>
-    <div class="mt-4">
-      <h4 class="h6 mb-3">Test failure message</h4>
+    <div class="mt-3">
       <%= failure_content %>
     </div>
   <% end %>
 
   <% if exception_content = exception_details_html(**@options) %>
-    <div class="mt-4">
-      <h4 class="h6 mb-3">Error in code</h4>
+    <div class="mt-3">
       <%= exception_content %>
     </div>
   <% end %>
