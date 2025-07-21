@@ -6,7 +6,7 @@ gemspec
 
 group :quality do
   gem "simplecov", "~> 0.22", require: false
-  gem "standard", "~> 1.40"
+  gem "standard", "1.50.0"
 end
 
 group :development do
