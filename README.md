@@ -3,6 +3,7 @@
 [![CI](https://github.com/firstdraft/rspec-html_messages/actions/workflows/ci.yml/badge.svg)](https://github.com/firstdraft/rspec-html_messages/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/rspec-html_messages.svg)](https://badge.fury.io/rb/rspec-html_messages)
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/standardrb/standard)
+[![Coverage Status](https://img.shields.io/badge/coverage-96.89%25-brightgreen.svg)](https://github.com/firstdraft/rspec-html_messages)
 
 Transform RSpec's JSON output into formatted HTML with syntax highlighting, side-by-side diffs, and Bootstrap styling.
 
