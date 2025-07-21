@@ -1,10 +1,10 @@
 #! /usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'bundler/setup'
+require "bundler/setup"
 Bundler.require :tools
 
-require 'rspec/html_messages'
-require 'irb'
+require "rspec/html_messages"
+require "irb"
 
 IRB.start __FILE__

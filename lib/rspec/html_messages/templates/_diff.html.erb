@@ -1,24 +1,21 @@
-<div class="diff-container">
-  <h4 class="h6 mb-3">Side-by-Side Comparison</h4>
-  <div class="card-group mb-4">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="h6 mb-0">Expected</h5>
-      </div>
-      <div class="card-body">
-        <div class="font-monospace">
-          <%= diff_html[:right] %>
-        </div>
+<div class="card-group">
+  <div class="card">
+    <div class="card-header">
+      <h5 class="h6 mb-0">Actual</h5>
+    </div>
+    <div class="card-body">
+      <div class="font-monospace">
+        <%= diff_html[:left] %>
       </div>
     </div>
-    <div class="card">
-      <div class="card-header">
-        <h5 class="h6 mb-0">Actual</h5>
-      </div>
-      <div class="card-body">
-        <div class="font-monospace">
-          <%= diff_html[:left] %>
-        </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <h5 class="h6 mb-0">Expected</h5>
+    </div>
+    <div class="card-body">
+      <div class="font-monospace">
+        <%= diff_html[:right] %>
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'action_view'
+require "action_view"
 
 module Rspec
   class HtmlMessages
@@ -22,10 +22,6 @@ module Rspec
         erb.result(binding_with_locals)
       end
 
-      def render_partial(partial_name)
-        render_template("_#{partial_name}")
-      end
-
       private
 
       def template_path_for(template_name)
@@ -33,7 +29,7 @@ module Rspec
       end
 
       def templates_dir
-        @templates_dir ||= File.expand_path('templates', __dir__)
+        @templates_dir ||= File.expand_path("templates", __dir__)
       end
 
       def html_escape(text)

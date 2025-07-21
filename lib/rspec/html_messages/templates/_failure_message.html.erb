@@ -1,9 +1,1 @@
-<div class="mt-4">
-  <h4 class="h6 mb-3">
-    Failure Message
-    <% if exception_class && !error_before_assertion? %>
-      <small class="text-muted">(<%= exception_class %>)</small>
-    <% end %>
-  </h4>
-  <pre class="failure-message bg-dark text-white p-3 rounded"><code><%= html_escape(failure_message) %></code></pre>
-</div>
+<pre class="failure-message bg-dark text-white p-3 rounded"><code><%= html_escape(@failure_message_text) %></code></pre>
