@@ -7,11 +7,10 @@ RSpec.describe "Rspec::HtmlMessages snapshots" do
     renderer = Rspec::HtmlMessages.new(example_data)
     html = renderer.render_html(**options)
     # Format the HTML for consistent snapshots
-    formatted = html
+    html
       .gsub(/>\s+</, ">\n<")
       .gsub(/\s+/, " ")
       .strip
-    formatted
   end
 
   describe "passing tests" do
@@ -78,8 +77,8 @@ RSpec.describe "Rspec::HtmlMessages snapshots" do
         "file_path" => "spec/example_spec.rb",
         "line_number" => 15,
         "details" => {
-          "expected" => '[1, 2, 3, 4]',
-          "actual" => '[1, 2, 5, 4]',
+          "expected" => "[1, 2, 3, 4]",
+          "actual" => "[1, 2, 5, 4]",
           "matcher_name" => "RSpec::Matchers::BuiltIn::Eq",
           "diffable" => true
         },
@@ -146,8 +145,8 @@ RSpec.describe "Rspec::HtmlMessages snapshots" do
         "file_path" => "spec/example_spec.rb",
         "line_number" => 30,
         "details" => {
-          "expected" => '(be > 5) and (be < 10)',
-          "actual" => '3',
+          "expected" => "(be > 5) and (be < 10)",
+          "actual" => "3",
           "matcher_name" => "RSpec::Matchers::BuiltIn::Compound::And",
           "diffable" => false
         },
@@ -239,8 +238,8 @@ RSpec.describe "Rspec::HtmlMessages snapshots" do
         "file_path" => "spec/example_spec.rb",
         "line_number" => 50,
         "details" => {
-          "expected" => '[1, 2, 3]',
-          "actual" => '[1, 3, 2]',
+          "expected" => "[1, 2, 3]",
+          "actual" => "[1, 3, 2]",
           "matcher_name" => "RSpec::Matchers::BuiltIn::ContainExactly",
           "diffable" => false # Normally false, but forced to true
         },
@@ -304,8 +303,8 @@ RSpec.describe "Rspec::HtmlMessages snapshots" do
         "file_path" => "spec/example_spec.rb",
         "line_number" => 65,
         "details" => {
-          "expected" => '100',
-          "actual" => '50',
+          "expected" => "100",
+          "actual" => "50",
           "matcher_name" => "RSpec::Matchers::BuiltIn::BeComparedTo",
           "diffable" => false,
           "original_message" => "expected: >= 100\n     got:    50"

@@ -7,7 +7,8 @@ unless ENV["NO_COVERAGE"]
     add_filter %r{^/spec/}
     enable_coverage :branch
     enable_coverage_for_eval
-    # minimum_coverage_by_file line: 95, branch: 95
+    minimum_coverage line: 95
+    minimum_coverage_by_file line: 90, branch: 60
   end
 end
 
@@ -30,7 +31,7 @@ RSpec.configure do |config|
   config.pending_failure_output = :no_backtrace
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.warnings = true
-  
+
   # Configure rspec-snapshot
   config.include RSpec::Snapshot
   config.snapshot_dir = "spec/fixtures/snapshots"
