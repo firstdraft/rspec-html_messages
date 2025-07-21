@@ -14,6 +14,7 @@ end
 Bundler.require :tools
 
 require "rspec/html_messages"
+require "rspec/snapshot"
 
 SPEC_ROOT = Pathname(__dir__).realpath.freeze
 
@@ -29,6 +30,10 @@ RSpec.configure do |config|
   config.pending_failure_output = :no_backtrace
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.warnings = true
+  
+  # Configure rspec-snapshot
+  config.include RSpec::Snapshot
+  config.snapshot_dir = "spec/fixtures/snapshots"
 
   config.expect_with :rspec do |expectations|
     expectations.syntax = :expect
