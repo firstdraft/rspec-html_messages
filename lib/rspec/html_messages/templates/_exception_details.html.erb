@@ -1,7 +1,12 @@
 <% if exception_message.present? %>
-  <div class="mb-3">
-    <pre class="bg-dark text-warning p-3 rounded error-message"><code class="fw-bold"><%= html_escape(exception_message) %>
+  <div class="card">
+    <div class="card-header">
+      <h5 class="h6 mb-0">Error in code</h5>
+    </div>
+    <div class="card-body">
+      <pre class="text-danger fs-6 error-message mb-0"><code class="fw-bold"><%= html_escape(exception_message) %>
 
-<% location = friendly_error_location %><% if location %><span class="text-white fw-normal"><%= html_escape(location) %></span><% end %></code></pre>
+<% location = friendly_error_location %><% if location %><span class="text-body fw-normal"><%= html_escape(location) %></span><% end %></code></pre>
+    </div>
   </div>
 <% end %>
