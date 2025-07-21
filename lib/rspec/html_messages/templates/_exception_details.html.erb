@@ -1,7 +1,7 @@
 <% if exception_message.present? %>
-  <div class="card">
+  <div class="card border-danger">
     <div class="card-header">
-      <h5 class="h6 mb-0">Error in code</h5>
+      <h5 class="h6 mb-0 text-danger">Error in code</h5>
     </div>
     <div class="card-body">
       <pre class="text-danger fs-6 error-message mb-0"><code class="fw-bold"><%= html_escape(exception_message) %>

@@ -10,11 +10,11 @@ Transform RSpec's JSON output into formatted HTML with syntax highlighting, side
 
 `rspec-html_messages` takes the enriched JSON output from [`rspec-enriched_json`](https://github.com/firstdraft/rspec-enriched_json) and renders it as HTML. It provides:
 
-- 🎨 **Beautiful formatting** - Clean, Bootstrap-styled output.
-- 🔍 **Side-by-side diffs** - Visual comparison of expected vs actual values.
-- 📊 **Smart data rendering** - Pretty-printing for complex objects.
-- 🧩 **Composable API** - Use individual components or the full renderer.
-- ⚙️ **Flexible options** - Control diff display and message formatting.
+- **Beautiful formatting** - Clean, Bootstrap-styled output.
+- **Side-by-side diffs** - Visual comparison of expected vs actual values.
+- **Smart data rendering** - Pretty-printing for complex objects.
+- **Composable API** - Use individual components or the full renderer.
+- **Flexible options** - Control diff display and message formatting.
 
 ## Installation
 
@@ -118,23 +118,23 @@ output_html = renderer.output_html(force_diffable: ["CustomMatcher"])
 
 #### Option Details
 
-- **`force_diffable`**: Array of matcher class names that should always show diffs, even if they report as non-diffable
-  - Default: `["RSpec::Matchers::BuiltIn::ContainExactly"]` (used by `contain_exactly` and `match_array`)
-  - Override by passing your own array
+- **`force_diffable`**: Array of matcher class names that should always show diffs, even if they report as non-diffable.
+  - Default: `["RSpec::Matchers::BuiltIn::ContainExactly"]` (used by `contain_exactly` and `match_array`).
+  - Override by passing your own array.
 
-- **`force_not_diffable`**: Array of matcher class names that should never show diffs, even if they report as diffable
-  - Default: `["RSpec::Matchers::BuiltIn::Include"]` (the `include` matcher shows what's missing more clearly than a diff)
-  - Override by passing your own array
+- **`force_not_diffable`**: Array of matcher class names that should never show diffs, even if they report as diffable.
+  - Default: `["RSpec::Matchers::BuiltIn::Include", "RSpec::Matchers::BuiltIn::Compound::And", "RSpec::Matchers::BuiltIn::Compound::Or"]`.
+  - Override by passing your own array.
 
-- **`rspec_diff_in_message`**: By default, RSpec's text-based diff is stripped from failure messages since we show a visual diff. Set to `true` to keep it
+- **`rspec_diff_in_message`**: By default, RSpec's text-based diff is stripped from failure messages since we show a visual diff. Set to `true` to keep it.
 
-- **`backtrace_max_lines`**: Maximum number of backtrace lines to display for errors
-  - Default: `10`
-  - Set to a higher number to see more of the stack trace
+- **`backtrace_max_lines`**: Maximum number of backtrace lines to display for errors.
+  - Default: `10`.
+  - Set to a higher number to see more of the stack trace.
 
-- **`backtrace_silence_gems`**: Whether to filter out gem frames from backtraces
-  - Default: `true` (hides frames from installed gems)
-  - Set to `false` to see the complete backtrace including gem internals
+- **`backtrace_silence_gems`**: Whether to filter out gem frames from backtraces.
+  - Default: `true` (hides frames from installed gems).
+  - Set to `false` to see the complete backtrace including gem internals.
 
 ### Complete Example
 
@@ -191,33 +191,33 @@ File.write("rspec_results.html", html)
 ### Passing Test
 
 For a passing test, you'll see:
-- ✓ Green checkmark and background
-- Test description and file location
-- No failure message or diff
+- Green checkmark and background.
+- Test description and file location.
+- No failure message or diff.
 
 ### Failing Test with Diff
 
 For a failing test with diffable values:
-- ✗ Red X and background  
-- Test description and file location
-- Side-by-side comparison showing differences
-- Failure message (with RSpec's diff stripped by default)
+- Red X and background.
+- Test description and file location.
+- Side-by-side comparison showing differences.
+- Failure message (with RSpec's diff stripped by default).
 
 ### Error Display
 
 For tests that encounter errors (exceptions) before assertions:
-- Exception class name highlighted in red
-- Stack trace with configurable depth
-- Gem frames filtered by default (configurable)
+- Exception class name highlighted in red.
+- Stack trace with configurable depth.
+- Gem frames filtered by default (configurable).
 
 ## Working with rspec-enriched_json
 
 This gem is designed to work with [`rspec-enriched_json`](https://github.com/firstdraft/rspec-enriched_json), which provides structured data about test failures including:
 
-- Expected and actual values as structured data (not just strings)
-- Matcher information
-- Diffable status
-- Original failure messages
+- Expected and actual values as structured data (not just strings).
+- Matcher information.
+- Diffable status.
+- Original failure messages.
 
 To use both gems together:
 
@@ -233,7 +233,7 @@ To use both gems together:
      -f RSpec::EnrichedJson::Formatters::EnrichedJsonFormatter
    ```
 
-3. Process the output with rspec-html_messages as shown in the examples above
+3. Process the output with rspec-html_messages as shown in the examples above.
 
 ## API Reference
 
