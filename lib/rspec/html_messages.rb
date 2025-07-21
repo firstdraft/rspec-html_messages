@@ -17,10 +17,15 @@ module Rspec
     include HtmlMessages::DiffFormatter
     include HtmlMessages::TemplateRenderer
 
-    attr_reader :example, :options
+    attr_reader :example
 
     def initialize(example)
+      validate_example!(example)
       @example = example
+    end
+    
+    def options
+      @options ||= default_options
     end
 
     # Individual rendering methods - return nil when no content to display
@@ -39,10 +44,11 @@ module Rspec
     end
 
     def failure_message_html(**options)
+      @options = default_options.merge(options)
+      
       # Don't show failure message for errors - that goes in exception details
       return nil unless has_failure_message?
 
-      @options = default_options.merge(options)
       @failure_message_text = failure_message
 
       render_template("_failure_message")
@@ -173,7 +179,7 @@ module Rspec
       message = message.sub(/\A\n/, "")
 
       # Strip RSpec's diff section if requested
-      if !@options[:rspec_diff_in_message]
+      if !options[:rspec_diff_in_message]
         # RSpec appends diffs with "\nDiff:" or "\nDiff for (...):"
         # The diff always contains @@ markers (unified diff format) or the empty diff message
         # This regex requires either @@ or "The diff is empty" to appear after Diff:
@@ -301,6 +307,27 @@ module Rspec
       else
         # Fallback to original format if parsing fails
         "#{exception_class}: #{first_line}"
+      end
+    end
+
+    private
+
+    def validate_example!(example)
+      raise ArgumentError, "Example cannot be nil" if example.nil?
+      raise ArgumentError, "Example must be a Hash" unless example.is_a?(Hash)
+      
+      # Validate required fields
+      required_fields = %w[id description status file_path line_number]
+      missing_fields = required_fields - example.keys
+      
+      unless missing_fields.empty?
+        raise ArgumentError, "Example is missing required fields: #{missing_fields.join(', ')}"
+      end
+      
+      # Validate status value
+      valid_statuses = %w[passed failed pending]
+      unless valid_statuses.include?(example["status"])
+        raise ArgumentError, "Invalid status: #{example['status']}. Must be one of: #{valid_statuses.join(', ')}"
       end
     end
   end

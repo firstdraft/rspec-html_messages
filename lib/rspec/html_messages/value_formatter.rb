@@ -38,7 +38,7 @@ module Rspec
         return nil unless serialized_value
 
         Oj.load(serialized_value, OJ_LOAD_OPTIONS)
-      rescue
+      rescue Oj::ParseError, EncodingError, TypeError
         serialized_value
       end
     end

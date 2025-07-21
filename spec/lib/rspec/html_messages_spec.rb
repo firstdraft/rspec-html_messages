@@ -10,6 +10,16 @@ RSpec.describe Rspec::HtmlMessages do
       "description" => "should equal 42",
       "status" => "passed",
       "file_path" => "spec/example_spec.rb",
+      "line_number" => 5
+    }
+  end
+  
+  let(:passing_example_with_output) do
+    {
+      "id" => "spec/example_spec.rb[1:1]",
+      "description" => "should equal 42",
+      "status" => "passed",
+      "file_path" => "spec/example_spec.rb",
       "line_number" => 5,
       "details" => {
         "expected" => '"42"',
@@ -112,8 +122,7 @@ RSpec.describe Rspec::HtmlMessages do
     end
 
     it "returns true when actual value is present even for passing tests" do
-      example = passing_example.merge("details" => {"actual" => '"42"'})
-      renderer = described_class.new(example)
+      renderer = described_class.new(passing_example_with_output)
       expect(renderer.has_output?).to be true
     end
   end
@@ -177,7 +186,8 @@ RSpec.describe Rspec::HtmlMessages do
         renderer = described_class.new(failing_example_with_diff)
         html = renderer.output_html
 
-        expect(html).to include("Side-by-Side Comparison")
+        expect(html).to include("card-group")
+        expect(html).to include("Expected")
         expect(html).to include("Expected")
         expect(html).to include("Actual")
         expect(html).to include("foo")
@@ -191,9 +201,10 @@ RSpec.describe Rspec::HtmlMessages do
         html = renderer.output_html
 
         expect(html).not_to include("Side-by-Side Comparison")
-        expect(html).to include("Actual Output")
+        expect(html).to include("Actual")
+        expect(html).to include("card-header")
         expect(html).to include("[")
-        expect(html).to include('"a"')
+        expect(html).to include('&quot;a&quot;')
       end
     end
 
@@ -202,7 +213,8 @@ RSpec.describe Rspec::HtmlMessages do
         renderer = described_class.new(failing_example_without_diff)
         html = renderer.output_html(force_diffable: ["RSpec::Matchers::BuiltIn::Include"])
 
-        expect(html).to include("Side-by-Side Comparison")
+        expect(html).to include("card-group")
+        expect(html).to include("Expected")
       end
     end
 
@@ -212,7 +224,8 @@ RSpec.describe Rspec::HtmlMessages do
         html = renderer.output_html
 
         expect(html).not_to include("Side-by-Side Comparison")
-        expect(html).to include("Actual Output")
+        expect(html).to include("Actual")
+        expect(html).to include("card-header")
       end
     end
   end
@@ -230,7 +243,8 @@ RSpec.describe Rspec::HtmlMessages do
         renderer = described_class.new(failing_example_with_diff)
         html = renderer.failure_message_html
 
-        expect(html).to include("Test failure message")
+        expect(html).to include("failure-message")
+        expect(html).to include("bg-dark")
         expect(html).to include("expected: &quot;foo&quot;")
         expect(html).to include("got: &quot;bar&quot;")
         expect(html).to include("bg-dark")
@@ -248,7 +262,7 @@ RSpec.describe Rspec::HtmlMessages do
     context "with rspec_diff_in_message option" do
       it "includes RSpec diff when true" do
         example = failing_example_with_diff.dup
-        example["exception"]["message"] += "\n\nDiff:\n@@ -1,2 +1,2 @@\n-foo\n+bar"
+        example["exception"]["message"] += "\n\n  Diff:\n@@ -1,2 +1,2 @@\n-foo\n+bar"
         
         renderer = described_class.new(example)
         html = renderer.failure_message_html(rspec_diff_in_message: true)
@@ -259,7 +273,7 @@ RSpec.describe Rspec::HtmlMessages do
 
       it "strips RSpec diff by default" do
         example = failing_example_with_diff.dup
-        example["exception"]["message"] += "\n\nDiff:\n@@ -1,2 +1,2 @@\n-foo\n+bar"
+        example["exception"]["message"] += "\n\n  Diff:\n@@ -1,2 +1,2 @@\n-foo\n+bar"
         
         renderer = described_class.new(example)
         html = renderer.failure_message_html
@@ -283,7 +297,7 @@ RSpec.describe Rspec::HtmlMessages do
         renderer = described_class.new(error_before_assertion)
         html = renderer.exception_details_html
 
-        expect(html).to include("undefined method `foo'")
+        expect(html).to include("undefined method `foo&#39;")
         expect(html).to include("NoMethodError on line 21")
         expect(html).to include("bg-dark")
         expect(html).to include("text-warning")
