@@ -1,18 +1,7 @@
-<div class="mt-4">
-  <h4 class="h6 mb-3">
-    Exception: <span class="text-danger"><%= exception_class %></span>
-  </h4>
-  
-  <% if exception_backtrace.any? %>
-    <div class="mt-3">
-      <h5 class="h6 text-muted mb-2">Backtrace:</h5>
-      <pre class="bg-dark text-white p-3 rounded"><code><% formatted_backtrace.each do |line| %><%= html_escape(line) %>
-<% end %></code></pre>
-      <% if exception_backtrace.size > formatted_backtrace.size %>
-        <small class="text-muted mt-1 d-block">
-          (<%= exception_backtrace.size - formatted_backtrace.size %> more frames omitted)
-        </small>
-      <% end %>
-    </div>
-  <% end %>
-</div>
+<% if exception_message.present? %>
+  <div class="mb-3">
+    <pre class="bg-dark text-white p-3 rounded"><code><%= html_escape(exception_message) %>
+
+<% location = friendly_error_location %><% if location %><span class="text-warning"><%= html_escape(location) %></span><% end %></code></pre>
+  </div>
+<% end %>

@@ -1,17 +1,22 @@
 <div class="rspec-html-messages">
-  <% if options[:show_diff_section] != false && (show_diff? || has_actual?) %>
-    <% if show_diff? %>
-      <%= render_partial('diff') %>
-    <% else %>
-      <%= render_partial('actual') %>
-    <% end %>
+  <% if output_content = output_html(**@options) %>
+    <div>   
+      <h4 class="h6 mb-3">Output</h4>
+      <%= output_content %>
+    </div>
   <% end %>
 
-  <% if options[:show_failure_message] != false && failure_message.present? %>
-    <%= render_partial('failure_message') %>
+  <% if failure_content = failure_message_html(**@options) %>
+    <div class="mt-4">
+      <h4 class="h6 mb-3">Test failure message</h4>
+      <%= failure_content %>
+    </div>
   <% end %>
 
-  <% if options[:show_exception_details] != false && error_before_assertion? %>
-    <%= render_partial('exception_details') %>
+  <% if exception_content = exception_details_html(**@options) %>
+    <div class="mt-4">
+      <h4 class="h6 mb-3">Error in code</h4>
+      <%= exception_content %>
+    </div>
   <% end %>
 </div>
