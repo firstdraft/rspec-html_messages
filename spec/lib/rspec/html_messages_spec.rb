@@ -13,7 +13,7 @@ RSpec.describe Rspec::HtmlMessages do
       "line_number" => 5
     }
   end
-  
+
   let(:passing_example_with_output) do
     {
       "id" => "spec/example_spec.rb[1:1]",
@@ -204,7 +204,7 @@ RSpec.describe Rspec::HtmlMessages do
         expect(html).to include("Actual")
         expect(html).to include("card-header")
         expect(html).to include("[")
-        expect(html).to include('&quot;a&quot;')
+        expect(html).to include("&quot;a&quot;")
       end
     end
 
@@ -263,7 +263,7 @@ RSpec.describe Rspec::HtmlMessages do
       it "includes RSpec diff when true" do
         example = failing_example_with_diff.dup
         example["exception"]["message"] += "\n\n  Diff:\n@@ -1,2 +1,2 @@\n-foo\n+bar"
-        
+
         renderer = described_class.new(example)
         html = renderer.failure_message_html(rspec_diff_in_message: true)
 
@@ -274,7 +274,7 @@ RSpec.describe Rspec::HtmlMessages do
       it "strips RSpec diff by default" do
         example = failing_example_with_diff.dup
         example["exception"]["message"] += "\n\n  Diff:\n@@ -1,2 +1,2 @@\n-foo\n+bar"
-        
+
         renderer = described_class.new(example)
         html = renderer.failure_message_html
 
@@ -326,7 +326,7 @@ RSpec.describe Rspec::HtmlMessages do
       it "respects backtrace_max_lines option" do
         example = error_before_assertion.dup
         example["exception"]["backtrace"] = (1..20).map { |i| "line #{i}" }
-        
+
         renderer = described_class.new(example)
         html = renderer.backtrace_html(backtrace_max_lines: 5)
 
@@ -374,7 +374,7 @@ RSpec.describe Rspec::HtmlMessages do
     it "escapes HTML in failure messages" do
       example = failing_example_with_diff.dup
       example["exception"]["message"] = 'expected: "<script>alert(1)</script>"'
-      
+
       renderer = described_class.new(example)
       html = renderer.failure_message_html
 
@@ -384,8 +384,8 @@ RSpec.describe Rspec::HtmlMessages do
 
     it "escapes HTML in exception messages" do
       example = error_before_assertion.dup
-      example["exception"]["message"] = 'undefined method `<script>alert(1)</script>`'
-      
+      example["exception"]["message"] = "undefined method `<script>alert(1)</script>`"
+
       renderer = described_class.new(example)
       html = renderer.exception_details_html
 

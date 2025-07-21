@@ -18,7 +18,7 @@ module Rspec
 
     # Matchers that should always show diffs regardless of their diffable flag
     FORCE_DIFFABLE_MATCHERS = ["RSpec::Matchers::BuiltIn::ContainExactly"].freeze
-    
+
     # Matchers that should never show diffs regardless of their diffable flag
     FORCE_NOT_DIFFABLE_MATCHERS = [
       "RSpec::Matchers::BuiltIn::Include",
@@ -32,7 +32,7 @@ module Rspec
       validate_example!(example)
       @example = example
     end
-    
+
     def options
       @options ||= default_options
     end
@@ -54,7 +54,7 @@ module Rspec
 
     def failure_message_html(**options)
       @options = default_options.merge(options)
-      
+
       # Don't show failure message for errors - that goes in exception details
       return nil unless has_failure_message?
 
@@ -305,7 +305,7 @@ module Rspec
       first_line = first_line.gsub(/^#{Regexp.escape(project_root)}\//, "")
 
       # Parse the backtrace line format: path:line:in 'method'
-      if match = first_line.match(/^(.+):(\d+):in ['`](.+)['`]$/)
+      if (match = first_line.match(/^(.+):(\d+):in ['`](.+)['`]$/))
         path, line_number, method = match.captures
         "#{exception_class} on line #{line_number} of #{path} in '#{method}'"
       else
@@ -319,19 +319,19 @@ module Rspec
     def validate_example!(example)
       raise ArgumentError, "Example cannot be nil" if example.nil?
       raise ArgumentError, "Example must be a Hash" unless example.is_a?(Hash)
-      
+
       # Validate required fields
       required_fields = %w[id description status file_path line_number]
       missing_fields = required_fields - example.keys
-      
+
       unless missing_fields.empty?
-        raise ArgumentError, "Example is missing required fields: #{missing_fields.join(', ')}"
+        raise ArgumentError, "Example is missing required fields: #{missing_fields.join(", ")}"
       end
-      
+
       # Validate status value
       valid_statuses = %w[passed failed pending]
       unless valid_statuses.include?(example["status"])
-        raise ArgumentError, "Invalid status: #{example['status']}. Must be one of: #{valid_statuses.join(', ')}"
+        raise ArgumentError, "Invalid status: #{example["status"]}. Must be one of: #{valid_statuses.join(", ")}"
       end
     end
   end
