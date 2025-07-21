@@ -244,11 +244,9 @@ RSpec.describe Rspec::HtmlMessages do
         html = renderer.failure_message_html
 
         expect(html).to include("failure-message")
-        expect(html).to include("bg-dark")
+        expect(html).to include("bg-warning text-bg-warning")
         expect(html).to include("expected: &quot;foo&quot;")
         expect(html).to include("got: &quot;bar&quot;")
-        expect(html).to include("bg-dark")
-        expect(html).to include("text-white")
       end
     end
 
@@ -299,8 +297,8 @@ RSpec.describe Rspec::HtmlMessages do
 
         expect(html).to include("undefined method `foo&#39;")
         expect(html).to include("NoMethodError on line 21")
-        expect(html).to include("bg-dark")
-        expect(html).to include("text-warning")
+        expect(html).to include("bg-danger text-bg-danger")
+        expect(html).to include("text-danger")
       end
     end
   end
@@ -344,7 +342,8 @@ RSpec.describe Rspec::HtmlMessages do
       html = renderer.render_html
 
       expect(html).to include('<div class="rspec-html-messages">')
-      expect(html).to include("Output")
+      expect(html).to include("Actual")
+      expect(html).to include("Expected")
       expect(html).to include("Test failure message")
       expect(html).not_to include("Code error details")
     end
