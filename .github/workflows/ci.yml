@@ -21,6 +21,8 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
+      env:
+        BUNDLE_WITHOUT: development
     
     - name: Run StandardRB
       run: bundle exec standardrb
