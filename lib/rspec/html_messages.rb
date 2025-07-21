@@ -20,7 +20,11 @@ module Rspec
     FORCE_DIFFABLE_MATCHERS = ["RSpec::Matchers::BuiltIn::ContainExactly"].freeze
     
     # Matchers that should never show diffs regardless of their diffable flag
-    FORCE_NOT_DIFFABLE_MATCHERS = ["RSpec::Matchers::BuiltIn::Include"].freeze
+    FORCE_NOT_DIFFABLE_MATCHERS = [
+      "RSpec::Matchers::BuiltIn::Include",
+      "RSpec::Matchers::BuiltIn::Compound::And",
+      "RSpec::Matchers::BuiltIn::Compound::Or"
+    ].freeze
 
     attr_reader :example
 
