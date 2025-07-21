@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
     "source_code_uri" => "https://github.com/firstdraft/rspec-html_messages"
   }
 
-  spec.required_ruby_version = "~> 3.0"
+  spec.required_ruby_version = ">= 3.2"
   spec.add_dependency "actionview", ">= 6.0"
   spec.add_dependency "activesupport", ">= 6.0"
   spec.add_dependency "amazing_print", "~> 1.6"
