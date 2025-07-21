@@ -31,24 +31,24 @@ $ gem install rspec-html_messages
 ### Basic Usage
 
 ```ruby
-require 'rspec/html_messages'
+require "rspec/html_messages"
 
 # Get enriched JSON from RSpec
 # (typically from running with rspec-enriched_json formatter)
 example_json = {
-  'id' => 'spec/example_spec.rb[1:1]',
-  'description' => 'should equal 42',
-  'status' => 'failed',
-  'file_path' => 'spec/example_spec.rb',
-  'line_number' => 10,
-  'details' => {
-    'expected' => '"42"',
-    'actual' => '"41"',
-    'matcher_name' => 'RSpec::Matchers::BuiltIn::Eq',
-    'diffable' => true
+  "id" => "spec/example_spec.rb[1:1]",
+  "description" => "should equal 42",
+  "status" => "failed",
+  "file_path" => "spec/example_spec.rb",
+  "line_number" => 10,
+  "details" => {
+    "expected" => '"42"',
+    "actual" => '"41"',
+    "matcher_name" => "RSpec::Matchers::BuiltIn::Eq",
+    "diffable" => true
   },
-  'exception' => {
-    'message' => 'expected: "42"\n     got: "41"\n\n(compared using ==)'
+  "exception" => {
+    "message" => "expected: \"42\"\n     got: \"41\"\n\n(compared using ==)"
   }
 }
 
@@ -137,8 +137,8 @@ output_html = renderer.output_html(force_diffable: ["CustomMatcher"])
 Here's a complete example that processes RSpec output and generates an HTML report:
 
 ```ruby
-require 'json'
-require 'rspec/html_messages'
+require "json"
+require "rspec/html_messages"
 
 # Run RSpec with enriched JSON formatter
 json_output = `bundle exec rspec --require rspec/enriched_json \
@@ -158,17 +158,17 @@ html = <<~HTML
 <body>
   <div class="container my-4">
     <h1>Test Results</h1>
-    <p>#{results['summary_line']}</p>
+    <p>#{results["summary_line"]}</p>
     
 HTML
 
 # Render each example
-results['examples'].each do |example|
+results["examples"].each do |example|
   renderer = Rspec::HtmlMessages.new(example)
   html << <<~EXAMPLE
     <div class="mb-4">
-      <h3>#{example['description']}</h3>
-      #{renderer.render}
+      <h3>#{example["description"]}</h3>
+      #{renderer.render_html}
     </div>
   EXAMPLE
 end
@@ -179,7 +179,7 @@ html << <<~HTML
 </html>
 HTML
 
-File.write('rspec_results.html', html)
+File.write("rspec_results.html", html)
 ```
 
 ## Output Examples
@@ -219,8 +219,8 @@ To use both gems together:
 
 1. Add both gems to your Gemfile:
    ```ruby
-   gem 'rspec-enriched_json'
-   gem 'rspec-html_messages'
+   gem "rspec-enriched_json"
+   gem "rspec-html_messages"
    ```
 
 2. Run RSpec with the enriched JSON formatter:
