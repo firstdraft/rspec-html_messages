@@ -87,7 +87,7 @@ module Rspec
     end
 
     # Example of how to use all three together
-    def render(**options)
+    def render_html(**options)
       @options = default_options.merge(options)
       render_template("example")
     end

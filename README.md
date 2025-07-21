@@ -1,23 +1,23 @@
 # RSpec HTML Messages
 
-Transform RSpec's JSON output into beautifully formatted HTML with syntax highlighting, side-by-side diffs, and Bootstrap styling.
+Transform RSpec's JSON output into formatted HTML with syntax highlighting, side-by-side diffs, and Bootstrap styling.
 
 ## Overview
 
 `rspec-html_messages` takes the enriched JSON output from [`rspec-enriched_json`](https://github.com/firstdraft/rspec-enriched_json) and renders it as HTML. It provides:
 
-- 🎨 **Beautiful formatting** - Clean, Bootstrap-styled output
-- 🔍 **Side-by-side diffs** - Visual comparison of expected vs actual values
-- 📊 **Smart data rendering** - Pretty-printing for complex objects
-- 🐛 **Debug mode** - See matcher details and raw JSON data
-- ⚙️ **Flexible options** - Control diff display and message formatting
+- 🎨 **Beautiful formatting** - Clean, Bootstrap-styled output.
+- 🔍 **Side-by-side diffs** - Visual comparison of expected vs actual values.
+- 📊 **Smart data rendering** - Pretty-printing for complex objects.
+- 🧩 **Composable API** - Use individual components or the full renderer.
+- ⚙️ **Flexible options** - Control diff display and message formatting.
 
 ## Installation
 
 Add to your Gemfile:
 
 ```ruby
-gem 'rspec-html_messages'
+gem "rspec-html_messages"
 ```
 
 Or install directly:
@@ -54,10 +54,44 @@ example_json = {
 
 # Render as HTML
 renderer = Rspec::HtmlMessages.new(example_json)
-html = renderer.render
+html = renderer.render_html
 
 # Output includes styled HTML with diff
 puts html
+```
+
+### Using Individual Components
+
+The gem provides a composable API where you can use individual components to build your own custom layouts:
+
+```ruby
+renderer = Rspec::HtmlMessages.new(example_json)
+
+# Check what content is available
+if renderer.has_output?
+  output_html = renderer.output_html
+end
+
+if renderer.has_failure_message?
+  failure_html = renderer.failure_message_html
+end
+
+if renderer.has_exception_details?
+  exception_html = renderer.exception_details_html
+end
+
+if renderer.has_backtrace?
+  exception_html = renderer.backtrace_html
+end
+
+# Build your own custom layout
+html = <<~HTML
+  <div class="my-custom-test-result">
+    #{output_html if renderer.has_output?}
+    #{failure_html if renderer.has_failure_message?}
+    #{exception_html if renderer.has_exception_details?}
+  </div>
+HTML
 ```
 
 ### Options
@@ -65,17 +99,20 @@ puts html
 You can customize the rendering with various options:
 
 ```ruby
-html = renderer.render(
-  debug: true,                    # Show debug information (default: false)
+# Options can be passed to the render_html method
+html = renderer.render_html(
   force_diffable: ["CustomMatcher"],  # Array of matchers to always show diffs for
   force_not_diffable: ["RSpec::Matchers::BuiltIn::Include"],  # Array of matchers to never show diffs for
-  rspec_diff_in_message: true    # Include RSpec's text diff in failure message (default: false)
+  rspec_diff_in_message: true,   # Include RSpec's text diff in failure message (default: false)
+  backtrace_max_lines: 10,       # Maximum backtrace lines to show (default: 10)
+  backtrace_silence_gems: true   # Filter out gem frames from backtraces (default: true)
 )
+
+# Or to individual component methods
+output_html = renderer.output_html(force_diffable: ["CustomMatcher"])
 ```
 
 #### Option Details
-
-- **`debug`**: When `true`, displays additional information including the matcher class, diffable status, and raw JSON data
 
 - **`force_diffable`**: Array of matcher class names that should always show diffs, even if they report as non-diffable
   - Default: `["RSpec::Matchers::BuiltIn::ContainExactly"]` (used by `contain_exactly` and `match_array`)
@@ -128,7 +165,12 @@ HTML
 # Render each example
 results['examples'].each do |example|
   renderer = Rspec::HtmlMessages.new(example)
-  html << renderer.render(debug: ENV['DEBUG'])
+  html << <<~EXAMPLE
+    <div class="mb-4">
+      <h3>#{example['description']}</h3>
+      #{renderer.render}
+    </div>
+  EXAMPLE
 end
 
 html << <<~HTML
@@ -157,12 +199,12 @@ For a failing test with diffable values:
 - Side-by-side comparison showing differences
 - Failure message (with RSpec's diff stripped by default)
 
-### Debug Mode
+### Error Display
 
-With `debug: true`, additional information is displayed:
-- Matcher class name (e.g., `RSpec::Matchers::BuiltIn::Eq`)
-- Whether the matcher is diffable
-- Collapsible section with raw JSON data
+For tests that encounter errors (exceptions) before assertions:
+- Exception class name highlighted in red
+- Stack trace with configurable depth
+- Gem frames filtered by default (configurable)
 
 ## Working with rspec-enriched_json
 
@@ -189,27 +231,44 @@ To use both gems together:
 
 3. Process the output with rspec-html_messages as shown in the examples above
 
-## Customization
+## API Reference
 
-### Templates
+### Instance Methods
 
-The gem uses ERB templates for rendering. The templates are located in `lib/rspec/html_messages/templates/`:
+#### `new(example)`
+Creates a new renderer instance with the example JSON data.
 
-- `example.html.erb` - Main template for each test example
-- `_styles.html.erb` - CSS styles (includes Diffy styles)
-- `_debug_header.html.erb` - Debug information header
-- `_diff.html.erb` - Side-by-side diff display
-- `_actual.html.erb` - Actual value display (for non-diffable failures)
-- `_failure_message.html.erb` - Failure message display
-- `_raw_json.html.erb` - Raw JSON display for debug mode
+#### `has_output?`
+Returns `true` if the example has output to display (failed tests or tests with actual values).
 
-### Styling
+#### `has_failure_message?`
+Returns `true` if the example has a failure message to display.
 
-The output uses Bootstrap 5 classes and includes custom styles for:
-- Example containers (`.example.passed`, `.example.failed`)
-- Status icons
-- Diff display (using Diffy's CSS)
-- Terminal-style output for failure messages
+#### `has_exception_details?`
+Returns `true` if the example has exception/error details to display.
+
+#### `has_backtrace?`
+Returns `true` if the example has a backtrace to display.
+
+#### `output_html(**options)`
+Renders just the output section (diff or actual value). Returns `nil` if no output to display.
+
+#### `failure_message_html(**options)`
+Renders just the failure message section. Returns `nil` if no failure message.
+
+#### `exception_details_html(**options)`
+Renders just the exception details section. Returns `nil` if no exception.
+
+#### `backtrace_html(**options)`
+Renders just the backtrace section. Returns `nil` if no backtrace.
+
+#### `render_html(**options)`
+Convenience method that renders all three sections in a standard layout.
+
+### Class Methods
+
+#### `Rspec::HtmlMessages.diff_css`
+Returns the CSS needed for diff display styling.
 
 ## Development
 
