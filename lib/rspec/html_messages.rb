@@ -157,9 +157,9 @@ module Rspec
     def passed?
       status == "passed"
     end
-
+    
     def failed?
-      !passed?
+      status == "failed"
     end
 
     def default_options
