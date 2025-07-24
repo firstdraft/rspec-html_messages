@@ -81,16 +81,28 @@ module Rspec
       render_template("_backtrace")
     end
 
+    def status_html(**options)
+      css_class, message = ""
+      if passed?
+        css_class = "alert-success"
+        message = "This test passed!"
+      else
+        css_class = "alert-danger"
+        message = "The test did not pass."
+      end
+      render_template("_status", css_class: css_class, message: message)
+    end
+
     # Public boolean methods so users can make their own decisions
     def has_output?
       # Don't show output for errors before assertions
       return false if error_before_assertion?
 
-      status == "failed" || has_actual?
+      failed? || has_actual?
     end
 
     def has_failure_message?
-      status == "failed" && !error_before_assertion? && failure_message.present?
+      failed? && !error_before_assertion? && failure_message.present?
     end
 
     def has_exception_details?
@@ -142,6 +154,14 @@ module Rspec
 
     private
 
+    def passed?
+      status == "passed"
+    end
+
+    def failed?
+      !passed?
+    end
+
     def default_options
       {
         force_diffable: FORCE_DIFFABLE_MATCHERS,
@@ -174,7 +194,7 @@ module Rspec
     end
 
     def calculate_failure_message
-      return nil unless status == "failed"
+      return nil unless failed?
 
       message = example.dig("exception", "message")
       return nil unless message
@@ -313,8 +333,6 @@ module Rspec
         "#{exception_class}: #{first_line}"
       end
     end
-
-    private
 
     def validate_example!(example)
       raise ArgumentError, "Example cannot be nil" if example.nil?
