@@ -156,7 +156,7 @@ module Rspec
     def passed?
       status == "passed"
     end
-    
+
     def failed?
       status == "failed"
     end
