@@ -82,12 +82,11 @@ module Rspec
     end
 
     def status_html(**options)
-      css_class, message = ""
       if passed?
         css_class = "alert-success"
         message = "This test passed!"
       else
-        css_class = "alert-danger"
+        css_class = "alert-warning"
         message = "The test did not pass."
       end
       render_template("_status", css_class: css_class, message: message)
