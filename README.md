@@ -267,8 +267,11 @@ Renders just the exception details section. Returns `nil` if no exception.
 #### `backtrace_html(**options)`
 Renders just the backtrace section. Returns `nil` if no backtrace.
 
+#### `status_html(**options)`
+Renders just the status section.
+
 #### `render_html(**options)`
-Convenience method that renders all three sections in a standard layout.
+Convenience method that renders all four sections in a standard layout.
 
 ### Class Methods
 
