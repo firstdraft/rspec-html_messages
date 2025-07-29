@@ -87,7 +87,7 @@ module Rspec
         message = "This test passed!"
       else
         css_class = "alert-warning"
-        message = "The test did not pass."
+        message = "This test did not pass."
       end
       render_template("_status", css_class: css_class, message: message)
     end
