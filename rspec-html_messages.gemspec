@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "amazing_print", "~> 1.6"
   spec.add_dependency "diffy", "~> 3.4"
   spec.add_dependency "oj", "~> 3.16"
-  spec.add_dependency "zeitwerk", "~> 2.7"
 
   spec.extra_rdoc_files = Dir["README*", "LICENSE*"]
   spec.files = Dir["*.gemspec", "lib/**/*"]

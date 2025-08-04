@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
-require "zeitwerk"
 require "active_support/backtrace_cleaner"
-
-Zeitwerk::Loader.new.then do |loader|
-  loader.tag = "rspec-html_messages"
-  loader.push_dir "#{__dir__}/.."
-  loader.setup
-end
 
 module Rspec
   # Main renderer class for converting enriched JSON examples to HTML
