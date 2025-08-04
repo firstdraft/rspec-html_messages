@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require "active_support/backtrace_cleaner"
+require "rspec/html_messages/value_formatter"
+require "rspec/html_messages/diff_formatter"
+require "rspec/html_messages/template_renderer"
 
 module Rspec
   # Main renderer class for converting enriched JSON examples to HTML
