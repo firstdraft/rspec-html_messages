@@ -3,7 +3,7 @@
 require "action_view"
 
 module Rspec
-  module HtmlMessages
+  class HtmlMessages
     module TemplateRenderer
       include ActionView::Helpers::TagHelper
       include ActionView::Helpers::TextHelper

@@ -3,7 +3,7 @@
 require "diffy"
 
 module Rspec
-  module HtmlMessages
+  class HtmlMessages
     module DiffFormatter
       def effective_diffable?(force_diffable: [], force_not_diffable: [])
         return true if force_diffable&.include?(matcher_name)

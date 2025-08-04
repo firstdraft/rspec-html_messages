@@ -4,7 +4,7 @@ require "oj"
 require "amazing_print"
 
 module Rspec
-  module HtmlMessages
+  class HtmlMessages
     module ValueFormatter
       # Oj options for deserializing - use object mode to restore symbols
       # but keep safety options to prevent code execution
