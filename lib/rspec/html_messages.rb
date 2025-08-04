@@ -11,7 +11,7 @@ end
 
 module Rspec
   # Main renderer class for converting enriched JSON examples to HTML
-  class HtmlMessages
+  module HtmlMessages
     include HtmlMessages::ValueFormatter
     include HtmlMessages::DiffFormatter
     include HtmlMessages::TemplateRenderer
